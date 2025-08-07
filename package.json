@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "build": "npm run build:css && npm run build:jsapp",
+    "build:css": "sass --no-source-map --no-error-css layout/css/style.scss pytest_xhtml/resources/style.css",
+    "build:jsapp": "browserify ./pytest_xhtml/scripts/index.js > ./pytest_xhtml/resources/app.js",
+    "lint": "eslint pytest_xhtml/scripts/ testing/",
+    "unit": "nyc mocha testing/**/unittest.js --require mock-local-storage",
+    "all": "npm run lint && npm run unit && npm run build:css && npm run build:jsapp"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.1",
+    "chai": "^4.3.6",
+    "eslint": "^8.20.0",
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^11.7.1",
+    "mock-local-storage": "^1.1.24",
+    "nyc": "^17.1.0",
+    "sass": "^1.89.2",
+    "sinon": "^21.0.0"
+  }
+}
