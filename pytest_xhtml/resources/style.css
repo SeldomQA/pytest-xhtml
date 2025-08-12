@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* 全局样式重置与基础设置 */
 * {
   margin: 0;
@@ -42,13 +43,12 @@
 }
 
 body {
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
   color: var(--text-color);
   background-color: #f8f9fa;
   line-height: 1.6;
   min-width: 1000px;
-  
 }
 
 .body {
@@ -118,25 +118,26 @@ table {
   position: fixed;
   bottom: 0;
 }
+
 .container-fluid {
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--x-gutter-x,1.5rem);
-  padding-right: var(--x-gutter-x,1.5rem);
+  padding-left: var(--x-gutter-x, 1.5rem);
+  padding-right: var(--x-gutter-x, 1.5rem);
   width: 100%;
 }
 
 .hstack {
-    align-items: center;
-    flex-direction: row;
+  align-items: center;
+  flex-direction: row;
 }
 
 .card-header {
-    background-color: transparent;
-    border-bottom: 0 solid #eceef3;
-    color: #16192c;
-    margin-bottom: 0;
-    padding: 1.25rem 1.5rem
+  background-color: transparent;
+  border-bottom: 0 solid #eceef3;
+  color: #16192c;
+  margin-bottom: 0;
+  padding: 1.25rem 1.5rem;
 }
 
 #environment td {
@@ -178,7 +179,7 @@ span.failed, .failed .col-result {
   font-weight: 500;
 }
 
-span.error,  span.xpassed, .error .col-result,  .xpassed .col-result {
+span.error, span.xpassed, .error .col-result, .xpassed .col-result {
   color: var(--danger-color);
   font-weight: 500;
 }
@@ -192,7 +193,7 @@ span.error,  span.xpassed, .error .col-result,  .xpassed .col-result {
 #results-table th {
   padding: 12px 15px;
   text-align: left;
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 800;
 }
 
@@ -244,7 +245,7 @@ span.error,  span.xpassed, .error .col-result,  .xpassed .col-result {
 
 .log {
   padding: 15px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   white-space: pre-wrap;
   color: #333;
 }
@@ -381,20 +382,17 @@ span.error,  span.xpassed, .error .col-result,  .xpassed .col-result {
     min-width: 900px;
   }
 }
-
 @media (max-width: 992px) {
   body {
     min-width: 768px;
     padding: 15px;
   }
-
   .summary__data {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
 }
-
 /* 其他样式 */
 .hidden {
   display: none;
@@ -422,7 +420,7 @@ span.error,  span.xpassed, .error .col-result,  .xpassed .col-result {
 }
 
 .sortable:after {
-  content: '';
+  content: "";
   position: absolute;
   right: 5px;
   top: 50%;
@@ -493,26 +491,56 @@ span.error,  span.xpassed, .error .col-result,  .xpassed .col-result {
   font-size: 14px;
 }
 
-.row{margin:0; margin-bottom: 25px;}
-.row{--x-gutter-y:0;display:flex;flex-wrap:wrap;margin-left:calc(var(--x-gutter-x)*-.5);margin-right:calc(var(--x-gutter-x)*-.5);margin-top:calc(var(--x-gutter-y)*-1)}
-.col-12{flex:0 0 auto;width:100%}.offset-1{margin-left:8.33333333%}
-.col-lg-5{flex:0 0 auto;width:41.66666667%}
-.col-xl-3{flex:0 0 auto;width:25%}
-.d-flex{display:flex!important}
+.row {
+  margin: 0;
+  margin-bottom: 25px;
+}
 
+.row {
+  --x-gutter-y:0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: calc(var(--x-gutter-x) * -0.5);
+  margin-right: calc(var(--x-gutter-x) * -0.5);
+  margin-top: calc(var(--x-gutter-y) * -1);
+}
+
+.col-12 {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.offset-1 {
+  margin-left: 8.33333333%;
+}
+
+.col-lg-5 {
+  flex: 0 0 auto;
+  width: 41.66666667%;
+}
+
+.col-xl-3 {
+  flex: 0 0 auto;
+  width: 25%;
+}
+
+.d-flex {
+  display: flex !important;
+}
 
 .card {
-    word-wrap: break-word;
-    background-clip: border-box;
-    background-color: #fff;
-    border: 0 solid #eceef3;
-    border-radius: .75rem;
-    box-shadow: 0 3px 3px -1px rgba(10,22,70,.1),0 0 1px 0 rgba(10,22,70,.06);
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    position: relative
+  word-wrap: break-word;
+  background-clip: border-box;
+  background-color: #fff;
+  border: 0 solid #eceef3;
+  border-radius: 0.75rem;
+  box-shadow: 0 3px 3px -1px rgba(10, 22, 70, 0.1), 0 0 1px 0 rgba(10, 22, 70, 0.06);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
 }
+
 .flex-fill {
-    flex: 1 1 auto!important;
+  flex: 1 1 auto !important;
 }
