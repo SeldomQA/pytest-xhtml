@@ -231,7 +231,7 @@ span.error, span.xpassed, .error .col-result, .xpassed .col-result {
 
 /* 日志包装器样式 */
 .logwrapper {
-  max-height: 250px;
+  max-height: 410px;
   overflow-y: auto;
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
@@ -260,6 +260,7 @@ span.error, span.xpassed, .error .col-result, .xpassed .col-result {
   margin: 15px 0;
   width: 100%;
   max-width: 500px;
+  float: right;
 }
 
 .media-container {
