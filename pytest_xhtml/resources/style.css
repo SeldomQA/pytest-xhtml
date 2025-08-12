@@ -18,6 +18,27 @@
   --border-radius: 8px;
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --transition: all 0.3s ease;
+  --x-primary: #5c60f5;
+  --x-shade-primary: #5356dd;
+  --x-tint-primary: #6c70f6;
+  --x-secondary: #cfd6df;
+  --x-shade-secondary: #bac1c9;
+  --x-tint-secondary: #d4dae2;
+  --x-tertiary: #ff579a;
+  --x-shade-tertiary: #e64e8b;
+  --x-tint-tertiary: #ff68a4;
+  --x-success: #0c8;
+  --x-shade-success: #00b87a;
+  --x-tint-success: #1ad194;
+  --x-info: #00d4ff;
+  --x-shade-info: #00bfe6;
+  --x-tint-info: #1ad8ff;
+  --x-warning: #ff8c00;
+  --x-shade-warning: #e67e00;
+  --x-tint-warning: #ff981a;
+  --x-danger: #f36;
+  --x-shade-danger: #e62e5c;
+  --x-tint-danger: #ff4775;
 }
 
 body {
@@ -142,12 +163,22 @@ span.skipped, .skipped .col-result {
   font-weight: 500;
 }
 
-span.xfailed, span.rerun, .xfailed .col-result, .rerun .col-result {
+span.xfailed, .xfailed .col-result {
   color: var(--warning-color);
   font-weight: 500;
 }
 
-span.error, span.failed, span.xpassed, .error .col-result, .failed .col-result, .xpassed .col-result {
+span.rerun, .rerun .col-result {
+  color: var(--x-info);
+  font-weight: 500;
+}
+
+span.failed, .failed .col-result {
+  color: var(--x-tertiary);
+  font-weight: 500;
+}
+
+span.error,  span.xpassed, .error .col-result,  .xpassed .col-result {
   color: var(--danger-color);
   font-weight: 500;
 }
@@ -209,21 +240,6 @@ span.error, span.failed, span.xpassed, .error .col-result, .failed .col-result, 
 
 .logwrapper.expanded {
   max-height: none;
-}
-
-.logexpander {
-  padding: 8px 12px;
-  background-color: var(--light-color);
-  border: 1px solid #e9ecef;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  display: inline-block;
-  margin: 10px;
-  transition: var(--transition);
-}
-
-.logexpander:hover {
-  background-color: #e2e6ea;
 }
 
 .log {
@@ -331,8 +347,8 @@ span.error, span.failed, span.xpassed, .error .col-result, .failed .col-result, 
 }
 
 .filters button, .collapse button {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--x-shade-secondary);
+  color: var(--primary-color);
   border: none;
   padding: 8px 15px;
   border-radius: var(--border-radius);
@@ -342,7 +358,7 @@ span.error, span.failed, span.xpassed, .error .col-result, .failed .col-result, 
 }
 
 .filters button:hover, .collapse button:hover {
-  background-color: #2980b9;
+  background-color: var(--x-tint-secondary);
 }
 
 /* 统计图表容器样式 */
