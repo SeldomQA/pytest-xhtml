@@ -120,15 +120,17 @@
               </div>
             </div>
         </div>
-        <table id="results-table">
-          <thead id="results-table-head">
-            <tr>
-            {%- for th in table_head %}
-              {{ th|safe }}
-            {%- endfor %}
-            </tr>
-          </thead>
-        </table>
+        <div class="card flex-fill">
+          <table id="results-table">
+            <thead id="results-table-head">
+              <tr>
+              {%- for th in table_head %}
+                {{ th|safe }}
+              {%- endfor %}
+              </tr>
+            </thead>
+          </table>
+        </div>
       </div>   
       <footer>
         <div id="data-container" data-jsonblob="{{ test_data }}"></div>
