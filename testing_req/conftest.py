@@ -14,8 +14,8 @@ def setup_log():
     # close log color
     # log_cfg.set_level(colorlog=False)
     # setting log format
-    # log_format = "<green>{time:YYYY-MM-DD HH:mm:ss}</> |<level> {level} | {message}</level>"
-    # log_cfg.set_level(format=log_format)
+    log_format = "<green>{time:YYYY-MM-DD HH:mm:ss}</> |<level> {level} | {message}</level>"
+    log_cfg.set_level(format=log_format)
 
 
 def pytest_xhtml_results_table_header(cells):
