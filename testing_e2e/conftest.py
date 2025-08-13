@@ -1,6 +1,6 @@
 import pytest
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from selenium import webdriver
 
 
@@ -19,7 +19,7 @@ def pytest_xhtml_results_table_header(cells):
 
 def pytest_xhtml_results_table_row(report, cells):
     cells.insert(2, f"<td>{report.description}</td>")
-    cells.insert(1, f'<td class="col-time">{datetime.utcnow()}</td>')
+    cells.insert(1, f'<td class="col-time">{datetime.now(timezone.utc)}</td>')
 
 
 @pytest.hookimpl(hookwrapper=True)
