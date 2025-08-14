@@ -66,14 +66,13 @@ h1 {
 h2 {
   font-size: 20px;
   color: var(--secondary-color);
-  margin: 15px 0;
+  /* margin: 15px 0; */
   font-weight: 500;
 }
 
 /* 段落和链接样式 */
 p {
   color: var(--text-color);
-  margin-bottom: 15px;
 }
 
 a {
@@ -101,6 +100,7 @@ table {
   padding-top: 12px;
   padding-bottom: 12px;
   position: sticky !important;
+  top: 0; /* 关键：指定粘性定位的基准位置 */
   z-index: 10 !important;
   background-color: white;
   --x-bg-opacity: 1;
@@ -140,7 +140,7 @@ table {
 }
 
 #environment td {
-  padding: 12px 15px;
+  padding: 6px 15px;
 }
 
 #environment tr:nth-child(odd) {
