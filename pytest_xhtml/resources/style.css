@@ -22,6 +22,7 @@
   --x-primary: #5c60f5;
   --x-shade-primary: #5356dd;
   --x-tint-primary: #6c70f6;
+  --x-skipped: #95a5a6;
   --x-secondary: #cfd6df;
   --x-shade-secondary: #bac1c9;
   --x-tint-secondary: #d4dae2;
@@ -168,7 +169,7 @@ span.passed, .passed .col-result {
 }
 
 span.skipped, .skipped .col-result {
-  color: var(--dark-color);
+  color: var(--x-skipped);
   font-weight: 500;
 }
 
@@ -183,12 +184,17 @@ span.rerun, .rerun .col-result {
 }
 
 span.failed, .failed .col-result {
-  color: var(--warning-color);
+  color: var(--danger-color);
   font-weight: 500;
 }
 
-span.error, span.xpassed, .error .col-result, .xpassed .col-result {
+span.error, .error .col-result {
   color: var(--danger-color);
+  font-weight: 500;
+}
+
+span.xpassed, .xpassed .col-result {
+  color: var(--warning-color);
   font-weight: 500;
 }
 
@@ -495,16 +501,24 @@ span.error, span.xpassed, .error .col-result, .xpassed .col-result {
 }
 
 /* New result card background colors */
+.bg-passed {
+  background-color: var(--x-success) !important;
+}
+
+.bg-failure {
+  background-color: var(--x-danger) !important;
+}
+
 .bg-skipped {
-  background-color: #95a5a6 !important; /* grey */
+  background-color: var(--x-skipped) !important; /* grey */
 }
 
 .bg-xfailed {
-  background-color: #f6c343 !important; /* golden / warning */
+  background-color: var(--warning-color) !important; /* golden / warning */
 }
 
 .bg-xpassed {
-  background-color: var(--x-danger) !important; /* light primary */
+  background-color: var(--warning-color) !important; /* light primary */
 }
 
 .bg-error {
@@ -642,18 +656,6 @@ span.error, span.xpassed, .error .col-result, .xpassed .col-result {
 
 .text-white {
   color: var(--x-white) !important;
-}
-
-.bg-success {
-  background-color: var(--x-success) !important;
-}
-
-.bg-warning {
-  background-color: var(--warning-color) !important;
-}
-
-.bg-soft-success {
-  background-color: #ccf5e7 !important;
 }
 
 .bg-soft-secondary {
