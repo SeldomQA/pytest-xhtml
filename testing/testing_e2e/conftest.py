@@ -1,5 +1,4 @@
 import pytest
-import os
 from datetime import datetime, timezone
 from selenium import webdriver
 
