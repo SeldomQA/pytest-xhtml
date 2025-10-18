@@ -2,6 +2,8 @@
 
 pytest-xhtml is a plugin for `pytest` that generates a HTML report for test results.
 
+⚠ **`pytest-xhtml` is the alternative library for `pytest-html`. If you have installed `pytest-html`, please uninstall it first.**
+
 ## install
 
 ```bash
