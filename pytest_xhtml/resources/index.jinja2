@@ -36,7 +36,9 @@
         {%- macro percent(value, total) -%}
           {%- if total > 0 -%}{{ "%.2f"|format((value * 100.0) / total) }}%{%- else -%}0.00%{%- endif -%}
         {%- endmacro -%}
-        {% set total = outcomes.values()|map(attribute='value')|sum %}
+        {% set raw_total = outcomes.values()|map(attribute='value')|sum %}
+        {% set rerun_count = outcomes.get("rerun", {}).get("value", 0) %}
+        {% set total = raw_total - rerun_count %}
         <!--  passed and failed rate cards -->
         <div class="col-12 col-lg-5 col-xl-2">
           <div class="card card-above flex-fill">
