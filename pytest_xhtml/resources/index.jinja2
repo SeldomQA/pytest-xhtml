@@ -14,8 +14,8 @@
   <body>
     <nav class="navbar-top" id="topbar">
       <div class="container-fluid">
-        <div class="">
-          <a href="https://github.com/SeldomQA/XTestRunner">
+        <div>
+          <a href="https://github.com/SeldomQA/pytest-xhtml">
             <img src="https://telegraph-image-cq2.pages.dev/XTestRunner_logo.jpg" style="height: 2.25rem;">
             <h1 style="float: right;" id="title">{{ title }}</h1>
           </a>
@@ -24,7 +24,7 @@
     </nav>
     <div class="body">
       <div class="row">
-        <div class="col-12 col-lg-5 col-xl-3 d-flex">
+        <div class="col-12 col-lg-5 col-xl-3">
           <div class="card flex-fill">
             <div class="card-header" id="environment-header">
               <h2>Environment</h2>
@@ -32,8 +32,129 @@
             <table id="environment"></table>
           </div>
         </div>
+        <!--  Calculate the percentage -->
+        {%- macro percent(value, total) -%}
+          {%- if total > 0 -%}{{ "%.2f"|format((value * 100.0) / total) }}%{%- else -%}0.00%{%- endif -%}
+        {%- endmacro -%}
+        {% set total = outcomes.values()|map(attribute='value')|sum %}
+        <!--  passed and failed rate cards -->
+        <div class="col-12 col-lg-5 col-xl-2">
+          <div class="card card-above flex-fill">
+            <div class="card-body">
+              <div class="row">
+                <div class="col"><span class="passed d-block">Passed</span>
+                  <span class="h3">
+                    {{ outcomes["passed"]["value"] }}
+                  </span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon-shape bg-success text-white text-lg rounded-circle">P</div>
+                </div>
+              </div>
+              <div>
+                <span class="badge bg-soft-secondary text-success">{{ percent(outcomes["passed"]["value"], total) }}</span>
+                <span>Pass rate</span>
+              </div>
+            </div>
+          </div>
+          <div class="card card-below flex-fill">
+            <div class="card-body">
+              <div class="row">
+                <div class="col"><span class="failed d-block">Failure</span>
+                  <span class="h3">
+                    {{ outcomes["failed"]["value"] }}
+                  </span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-warning text-white text-lg rounded-circle">F</div>
+                </div>
+              </div>
+              <div>
+                <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["failed"]["value"], total) }}</span>
+                <span>Failure rate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--  skipped and xfailed rate cards -->
+        <div class="col-12 col-lg-5 col-xl-2">
+          <div class="card card-above flex-fill">
+            <div class="card-body">
+              <div class="row">
+                <div class="col"><span class="skipped d-block">Skipped</span>
+                  <span class="h3">
+                    {{ outcomes["skipped"]["value"] }}
+                  </span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon-shape bg-skipped text-white text-lg rounded-circle">S</div>
+                </div>
+              </div>
+              <div>
+                <span class="badge bg-soft-secondary text-dark">{{ percent(outcomes["skipped"]["value"], total) }}</span>
+                <span>Skipped rate</span>
+              </div>
+            </div>
+          </div>
+          <div class="card card-below flex-fill">
+            <div class="card-body">
+              <div class="row">
+                <div class="col"><span class="xfailed d-block">Expected failures</span>
+                  <span class="h3">
+                    {{ outcomes["xfailed"]["value"] }}
+                  </span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon-shape bg-xfailed text-white text-lg rounded-circle">Xf</div>
+                </div>
+              </div>
+              <div>
+                <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["xfailed"]["value"], total) }}</span>
+                <span>Expected fail rate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--  xpassed and xfailed rate cards -->
+        <div class="col-12 col-lg-5 col-xl-2">
+          <div class="card card-above flex-fill">
+            <div class="card-body">
+              <div class="row">
+                <div class="col"><span class="xpassed d-block">Unexpected passes</span>
+                  <span class="h3">
+                    {{ outcomes["xpassed"]["value"] }}
+                  </span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon-shape bg-xpassed text-white text-lg rounded-circle">Xp</div>
+                </div>
+              </div>
+              <div>
+                <span class="badge bg-soft-secondary text-info">{{ percent(outcomes["xpassed"]["value"], total) }}</span>
+                <span>Unexpected pass rate</span>
+              </div>
+            </div>
+          </div>
+          <div class="card card-below flex-fill">
+            <div class="card-body">
+              <div class="row">
+                <div class="col"><span class="error d-block">Errors</span>
+                  <span class="h3">
+                    {{ outcomes["error"]["value"] }}
+                  </span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon-shape bg-error text-white text-lg rounded-circle">E</div>
+                </div>
+              </div>
+              <div>
+                <span class="badge bg-soft-secondary text-danger">{{ percent(outcomes["error"]["value"], total) }}</span>
+                <span>Error rate</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    
       <!-- TEMPLATES -->
       <template id="template_environment_row">
         <tr>
