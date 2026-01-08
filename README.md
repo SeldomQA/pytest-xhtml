@@ -1,5 +1,7 @@
 # pytest-xhtml
 
+![](./images/XReport_logo.png)
+
 pytest-xhtml is a plugin for `pytest` that generates a HTML report for test results.
 
 ⚠ **`pytest-xhtml` is the alternative library for `pytest-html`. If you have installed `pytest-html`, please uninstall it first.**
@@ -20,7 +22,7 @@ cd testing_unit
 $ pytest test_sample.py --html=report.html
 ```
 
-![unit test](./images/unit_report.png)
+![unit test](./images/unit_report_0.3.0.png)
 
 * e2e test
 
@@ -32,7 +34,7 @@ $ cd testing_e2e
 $ pytest test_selenium.py --html=report.html
 ```
 
-![e2e test](./images/e2e_report.png)
+![e2e test](./images/e2e_report_0.3.0.png)
 
 * http test
 
@@ -44,7 +46,7 @@ $ cd testing_req
 $ pytest test_req.py --html=report.html
 ```
 
-![http test](./images/http_report.png)
+![http test](./images/http_report_0.3.0.png)
 
 ## Develop
 
