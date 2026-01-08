@@ -1,276 +1,289 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8"/>
-    <title id="head-title">{{ title }}</title>
-    {%- if self_contained %}
-      <style type="text/css">
-        {{- styles|safe }}
-      </style>
-    {% else %}
-      <link href="{{ styles }}" rel="stylesheet" type="text/css"/>
-    {%- endif %}
-  </head>
-  <body>
-    <nav class="navbar-top" id="topbar">
-      <div class="container-fluid">
-        <div>
-          <a href="https://github.com/SeldomQA/pytest-xhtml">
-            <img src="https://telegraph-image-cq2.pages.dev/XTestRunner_logo.jpg" style="height: 2.25rem;">
-            <h1 style="float: right;" id="title">{{ title }}</h1>
-          </a>
-        </div>
-      </div>
-    </nav>
-    <div class="body">
-      <div class="row">
-        <div class="col-12 col-lg-5 col-xl-3">
-          <div class="card flex-fill">
-            <div class="card-header" id="environment-header">
-              <h2>Environment</h2>
-            </div>
-            <table id="environment"></table>
-          </div>
-        </div>
-        <!--  Calculate the percentage -->
-        {%- macro percent(value, total) -%}
-          {%- if total > 0 -%}{{ "%.2f"|format((value * 100.0) / total) }}%{%- else -%}0.00%{%- endif -%}
-        {%- endmacro -%}
-        {% set raw_total = outcomes.values()|map(attribute='value')|sum %}
-        {% set rerun_count = outcomes.get("rerun", {}).get("value", 0) %}
-        {% set total = raw_total - rerun_count %}
-        <!--  passed and failed rate cards -->
-        <div class="col-12 col-lg-5 col-xl-2">
-          <div class="card card-above flex-fill">
-            <div class="card-body">
-              <div class="row">
-                <div class="col"><span class="passed d-block">Passed</span>
-                  <span class="h3">
-                    {{ outcomes["passed"]["value"] }}
-                  </span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon-shape bg-passed text-white text-lg rounded-circle">P</div>
-                </div>
-              </div>
-              <div>
-                <span class="badge bg-soft-secondary text-success">{{ percent(outcomes["passed"]["value"], total) }}</span>
-                <span>Pass rate</span>
-              </div>
-            </div>
-          </div>
-          <div class="card card-below flex-fill">
-            <div class="card-body">
-              <div class="row">
-                <div class="col"><span class="failed d-block">Failure</span>
-                  <span class="h3">
-                    {{ outcomes["failed"]["value"] }}
-                  </span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon icon-shape bg-failure text-white text-lg rounded-circle">F</div>
-                </div>
-              </div>
-              <div>
-                <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["failed"]["value"], total) }}</span>
-                <span>Failure rate</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--  skipped and xfailed rate cards -->
-        <div class="col-12 col-lg-5 col-xl-2">
-          <div class="card card-above flex-fill">
-            <div class="card-body">
-              <div class="row">
-                <div class="col"><span class="skipped d-block">Skipped</span>
-                  <span class="h3">
-                    {{ outcomes["skipped"]["value"] }}
-                  </span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon-shape bg-skipped text-white text-lg rounded-circle">S</div>
-                </div>
-              </div>
-              <div>
-                <span class="badge bg-soft-secondary text-dark">{{ percent(outcomes["skipped"]["value"], total) }}</span>
-                <span>Skipped rate</span>
-              </div>
-            </div>
-          </div>
-          <div class="card card-below flex-fill">
-            <div class="card-body">
-              <div class="row">
-                <div class="col"><span class="xfailed d-block">Expected failures</span>
-                  <span class="h3">
-                    {{ outcomes["xfailed"]["value"] }}
-                  </span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon-shape bg-xfailed text-white text-lg rounded-circle">Xf</div>
-                </div>
-              </div>
-              <div>
-                <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["xfailed"]["value"], total) }}</span>
-                <span>Expected fail rate</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--  xpassed and xfailed rate cards -->
-        <div class="col-12 col-lg-5 col-xl-2">
-          <div class="card card-above flex-fill">
-            <div class="card-body">
-              <div class="row">
-                <div class="col"><span class="xpassed d-block">Unexpected passes</span>
-                  <span class="h3">
-                    {{ outcomes["xpassed"]["value"] }}
-                  </span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon-shape bg-xpassed text-white text-lg rounded-circle">Xp</div>
-                </div>
-              </div>
-              <div>
-                <span class="badge bg-soft-secondary text-info">{{ percent(outcomes["xpassed"]["value"], total) }}</span>
-                <span>Unexpected pass rate</span>
-              </div>
-            </div>
-          </div>
-          <div class="card card-below flex-fill">
-            <div class="card-body">
-              <div class="row">
-                <div class="col"><span class="error d-block">Errors</span>
-                  <span class="h3">
-                    {{ outcomes["error"]["value"] }}
-                  </span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon-shape bg-error text-white text-lg rounded-circle">E</div>
-                </div>
-              </div>
-              <div>
-                <span class="badge bg-soft-secondary text-danger">{{ percent(outcomes["error"]["value"], total) }}</span>
-                <span>Error rate</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- TEMPLATES -->
-      <template id="template_environment_row">
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-      </template>
-      <template id="template_results-table__body--empty">
-        <tbody class="results-table-row">
-          <tr id="not-found-message">
-            <td colspan="{{ table_head|length }}">No results found. Check the filters.</td>
-          </tr>
-        </tbody>
-      </template>
-      <template id="template_results-table__tbody">
-        <tbody class="results-table-row">
-          <tr class="collapsible">
-          </tr>
-          <tr class="extras-row">
-            <td class="extra" colspan="{{ table_head|length }}">
-              <div class="extraHTML"></div>
-              <div class="media">
-                <div class="media-container">
-                    <div class="media-container__nav--left">&lt;</div>
-                    <div class="media-container__viewport">
-                      <img src="" />
-                      <video controls>
-                        <source src="" type="video/mp4">
-                      </video>
-                    </div>
-                    <div class="media-container__nav--right">&gt;</div>
-                  </div>
-                  <div class="media__name"></div>
-                  <div class="media__counter"></div>
-              </div>
-              <div class="logwrapper">
-                <div class="logexpander"></div>
-                <div class="log"></div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-      <!-- END TEMPLATES -->
 
-      <div class="summary">
-        <div class="summary__data">
-          <h2>Summary</h2>
-          <div class="additional-summary prefix">
-            {%- for p in additional_summary['prefix'] %}
-            {{ p|safe }}
-            {%- endfor %}
+<head>
+  <meta charset="utf-8" />
+  <title id="head-title">{{ title }}</title>
+  {%- if self_contained %}
+  <style type="text/css">
+    {
+        {
+        - styles|safe
+      }
+    }
+  </style>
+  {% else %}
+  <link href="{{ styles }}" rel="stylesheet" type="text/css" />
+  {%- endif %}
+</head>
+
+<body>
+  <nav class="navbar-top" id="topbar">
+    <div class="container-fluid">
+      <div>
+        <a href="https://github.com/SeldomQA/pytest-xhtml">
+          <img src="https://telegraph-image-cq2.pages.dev/XReport_logo.png" style="height: 2.25rem;">
+          <h1 style="float: right;" id="title">{{ title }}</h1>
+        </a>
+      </div>
+    </div>
+  </nav>
+  <div class="body">
+    <div class="row">
+      <div class="col-12 col-lg-5 col-xl-3">
+        <div class="card flex-fill">
+          <div class="card-header" id="environment-header">
+            <h2>Environment</h2>
           </div>
-          <p class="run-count">{{ run_count }}</p>
-          <p>(Un)check the boxes to filter the results.</p>
-          <div class="summary__reload">
-            <div class="summary__reload__button {{ 'hidden' if running_state == 'finished' }}" onclick="location.reload()">
-              <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          <table id="environment"></table>
+        </div>
+      </div>
+      <!--  Calculate the percentage -->
+      {%- macro percent(value, total) -%}
+      {%- if total > 0 -%}{{ "%.2f"|format((value * 100.0) / total) }}%{%- else -%}0.00%{%- endif -%}
+      {%- endmacro -%}
+      {% set raw_total = outcomes.values()|map(attribute='value')|sum %}
+      {% set rerun_count = outcomes.get("rerun", {}).get("value", 0) %}
+      {% set total = raw_total - rerun_count %}
+      <!--  passed and failed rate cards -->
+      <div class="col-12 col-lg-5 col-xl-2">
+        <div class="card card-above flex-fill">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><span class="passed d-block">Passed</span>
+                <span class="h3">
+                  {{ outcomes["passed"]["value"] }}
+                </span>
+              </div>
+              <div class="col-auto">
+                <div class="icon-shape bg-passed text-white text-lg rounded-circle">P</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge bg-soft-secondary text-success">{{ percent(outcomes["passed"]["value"], total)
+                }}</span>
+              <span>Pass rate</span>
             </div>
           </div>
         </div>
+        <div class="card card-below flex-fill">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><span class="failed d-block">Failure</span>
+                <span class="h3">
+                  {{ outcomes["failed"]["value"] }}
+                </span>
+              </div>
+              <div class="col-auto">
+                <div class="icon icon-shape bg-failure text-white text-lg rounded-circle">F</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["failed"]["value"], total)
+                }}</span>
+              <span>Failure rate</span>
+            </div>
+          </div>
         </div>
-        <div class="additional-summary">
-          {%- for s in additional_summary['summary'] %}
-          {{ s|safe }}
-          {%- endfor %}
+      </div>
+      <!--  skipped and xfailed rate cards -->
+      <div class="col-12 col-lg-5 col-xl-2">
+        <div class="card card-above flex-fill">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><span class="skipped d-block">Skipped</span>
+                <span class="h3">
+                  {{ outcomes["skipped"]["value"] }}
+                </span>
+              </div>
+              <div class="col-auto">
+                <div class="icon-shape bg-skipped text-white text-lg rounded-circle">S</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge bg-soft-secondary text-dark">{{ percent(outcomes["skipped"]["value"], total) }}</span>
+              <span>Skipped rate</span>
+            </div>
+          </div>
         </div>
-        <div class="additional-summary postfix">
-          {%- for p in additional_summary['postfix'] %}
+        <div class="card card-below flex-fill">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><span class="xfailed d-block">Expected failures</span>
+                <span class="h3">
+                  {{ outcomes["xfailed"]["value"] }}
+                </span>
+              </div>
+              <div class="col-auto">
+                <div class="icon-shape bg-xfailed text-white text-lg rounded-circle">Xf</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["xfailed"]["value"], total)
+                }}</span>
+              <span>Expected fail rate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--  xpassed and xfailed rate cards -->
+      <div class="col-12 col-lg-5 col-xl-2">
+        <div class="card card-above flex-fill">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><span class="xpassed d-block">Unexpected passes</span>
+                <span class="h3">
+                  {{ outcomes["xpassed"]["value"] }}
+                </span>
+              </div>
+              <div class="col-auto">
+                <div class="icon-shape bg-xpassed text-white text-lg rounded-circle">Xp</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge bg-soft-secondary text-info">{{ percent(outcomes["xpassed"]["value"], total) }}</span>
+              <span>Unexpected pass rate</span>
+            </div>
+          </div>
+        </div>
+        <div class="card card-below flex-fill">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><span class="error d-block">Errors</span>
+                <span class="h3">
+                  {{ outcomes["error"]["value"] }}
+                </span>
+              </div>
+              <div class="col-auto">
+                <div class="icon-shape bg-error text-white text-lg rounded-circle">E</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge bg-soft-secondary text-danger">{{ percent(outcomes["error"]["value"], total) }}</span>
+              <span>Error rate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- TEMPLATES -->
+    <template id="template_environment_row">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </template>
+    <template id="template_results-table__body--empty">
+      <tbody class="results-table-row">
+        <tr id="not-found-message">
+          <td colspan="{{ table_head|length }}">No results found. Check the filters.</td>
+        </tr>
+      </tbody>
+    </template>
+    <template id="template_results-table__tbody">
+      <tbody class="results-table-row">
+        <tr class="collapsible">
+        </tr>
+        <tr class="extras-row">
+          <td class="extra" colspan="{{ table_head|length }}">
+            <div class="extraHTML"></div>
+            <div class="media">
+              <div class="media-container">
+                <div class="media-container__nav--left">&lt;</div>
+                <div class="media-container__viewport">
+                  <img src="" />
+                  <video controls>
+                    <source src="" type="video/mp4">
+                  </video>
+                </div>
+                <div class="media-container__nav--right">&gt;</div>
+              </div>
+              <div class="media__name"></div>
+              <div class="media__counter"></div>
+            </div>
+            <div class="logwrapper">
+              <div class="logexpander"></div>
+              <div class="log"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+    <!-- END TEMPLATES -->
+
+    <div class="summary">
+      <div class="summary__data">
+        <h2>Summary</h2>
+        <div class="additional-summary prefix">
+          {%- for p in additional_summary['prefix'] %}
           {{ p|safe }}
           {%- endfor %}
         </div>
-        <div class="summary__spacer">
-          <div class="controls">
-              <div class="filters">
-              {%- for result, values in outcomes.items() %}
-                <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="{{ result }}" {{ "disabled" if values["value"] == 0 }}>
-                <span class="{{ result }}">{{ values["value"] }} {{ values["label"] }}{{ "," if result != "rerun" }}</span>
-              {%- endfor %}
-              </div>
-              <div class="collapse">
-                <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;
-                <button id="hide_all_details">Hide all details</button>
-              </div>
-            </div>
+        <p class="run-count">{{ run_count }}</p>
+        <p>(Un)check the boxes to filter the results.</p>
+        <div class="summary__reload">
+          <div class="summary__reload__button {{ 'hidden' if running_state == 'finished' }}"
+            onclick="location.reload()">
+            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          </div>
         </div>
-        <div class="card flex-fill">
-          <table id="results-table">
-            <thead id="results-table-head">
-              <tr>
-              {%- for th in table_head %}
-                {{ th|safe }}
-              {%- endfor %}
-              </tr>
-            </thead>
-          </table>
-        </div>
-      </div>   
-      <footer>
-        <div id="data-container" data-jsonblob="{{ test_data }}"></div>
-        <script>
-          {% include "app.js" %}
-        </script>
-      </footer>
+      </div>
     </div>
-    <footer class="footer-bottom">
+    <div class="additional-summary">
+      {%- for s in additional_summary['summary'] %}
+      {{ s|safe }}
+      {%- endfor %}
+    </div>
+    <div class="additional-summary postfix">
+      {%- for p in additional_summary['postfix'] %}
+      {{ p|safe }}
+      {%- endfor %}
+    </div>
+    <div class="card flex-fill">
+      <div class="summary__spacer">
+        <div class="controls">
+          <div class="filters">
+            {%- for result, values in outcomes.items() %}
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="{{ result }}"
+              {{ "disabled" if values["value"]==0 }}>
+            <span class="{{ result }}">{{ values["value"] }} {{ values["label"] }}{{ "," if result != "rerun" }}</span>
+            {%- endfor %}
+          </div>
+          <div class="collapse">
+            <button class="show-summary" id="hide_all_details">Show summary</button>
+            <button class="show-details" id="show_all_details">Show details</button>
+          </div>
+        </div>
+      </div>
+      <table id="results-table">
+        <thead id="results-table-head">
+          <tr>
+            {%- for th in table_head %}
+            {{ th|safe }}
+            {%- endfor %}
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+  <footer>
+    <div id="data-container" data-jsonblob="{{ test_data }}"></div>
+    <script>
+      {% include "app.js" %}
+    </script>
+  </footer>
+  </div>
+  <footer class="footer-bottom">
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-6">
-          <p>Report generated on {{ date }} at {{ time }} by <a href="https://github.com/SeldomQA/pytest-xhtml">pytest-xhtml</a>
-          v{{ version }}</p>
+          <p>Report generated on {{ date }} at {{ time }} by <a
+              href="https://github.com/SeldomQA/pytest-xhtml">pytest-xhtml</a>
+            v{{ version }}</p>
         </div>
       </div>
     </div>
   </footer>
-  </body>
+</body>
+
 </html>
