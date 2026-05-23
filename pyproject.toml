@@ -78,9 +78,7 @@ features = [
 # source = "vcs"
 
 [tool.hatch.build.targets.wheel]
-exclude = [
-  "pytest_xhtml/scripts/*",
-]
+exclude = []
 
 [tool.hatch.build.targets.sdist]
 exclude = [
@@ -89,9 +87,6 @@ exclude = [
 
 # [tool.hatch.build.hooks.vcs]
 # version-file = "pytest_xhtml/__version.py"
-
-[tool.hatch.build.hooks.custom]
-path = "scripts/npm.py"
 
 [tool.mypy]
 check_untyped_defs = false         # TODO

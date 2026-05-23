@@ -52,14 +52,6 @@ repos:
       - id: pyupgrade
         args: [--py39-plus]
 
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.29.0
-    hooks:
-      - id: eslint
-        additional_dependencies:
-          - eslint@8.20.0
-          - eslint-config-google@0.14.0
-        args: ["--fix"]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.16.1
     hooks:
@@ -84,8 +76,3 @@ repos:
         files: \.jinja2$
         language: python
         additional_dependencies: [djlint]
-
-  - repo: https://github.com/elidupuis/mirrors-sass-lint
-    rev: "5cc45653263b423398e4af2561fae362903dd45d"
-    hooks:
-      - id: sass-lint
