@@ -6,11 +6,7 @@
   <title id="head-title">{{ title }}</title>
   {%- if self_contained %}
   <style type="text/css">
-    {
-        {
-        - styles|safe
-      }
-    }
+    {{ styles|safe }}
   </style>
   {% else %}
   <link href="{{ styles }}" rel="stylesheet" type="text/css" />

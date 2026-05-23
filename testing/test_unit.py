@@ -17,7 +17,7 @@ def run(pytester, path="report.html", cmd_flags=None):
 def file_content():
     return (
         importlib.resources.files("pytest_xhtml")
-        .joinpath("assets", "style.css")
+        .joinpath("resources", "style.css")
         .read_bytes()
         .decode("utf-8")
         .strip()
@@ -124,7 +124,7 @@ def test_custom_css(pytester, css_file_path, expandvar):
 
     path = pytester.path.joinpath("assets", "style.css")
 
-    with open(str(path)) as f:
+    with open(str(path), encoding="utf-8") as f:
         css = f.read()
         assert_that(css).contains("* " + str(css_file_path)).contains("* two.css")
 
@@ -143,6 +143,6 @@ def test_custom_css_selfcontained(pytester, css_file_path, expandvar):
     )
     result.assert_outcomes(passed=1)
 
-    with open(pytester.path / "report.html") as f:
+    with open(pytester.path / "report.html", encoding="utf-8") as f:
         html = f.read()
         assert_that(html).contains("* " + str(css_file_path)).contains("* two.css")
