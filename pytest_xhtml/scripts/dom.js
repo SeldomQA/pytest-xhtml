@@ -1,5 +1,4 @@
 const mediaViewer = require('./mediaviewer.js')
-const templateEnvRow = document.getElementById('template_environment_row')
 const templateResult = document.getElementById('template_results-table__tbody')
 
 function htmlToElements(html) {
@@ -23,19 +22,6 @@ const findAll = (selector, elem) => {
 }
 
 const dom = {
-    getStaticRow: (key, value) => {
-        const envRow = templateEnvRow.content.cloneNode(true)
-        const isObj = typeof value === 'object' && value !== null
-        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
-
-        const valuesElement = htmlToElements(
-            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
-        const td = findAll('td', envRow)
-        td[0].textContent = key
-        td[1].appendChild(valuesElement)
-
-        return envRow
-    },
     getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
         const resultBody = templateResult.content.cloneNode(true)
         resultBody.querySelector('tbody').classList.add(result.toLowerCase())

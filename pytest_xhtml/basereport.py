@@ -53,6 +53,28 @@ class BaseReport:
         generated = datetime.datetime.now()
         test_data = self._report.data
         test_data = json.dumps(test_data)
+
+        start_dt = datetime.datetime.fromtimestamp(self._suite_start_time)
+        start_time = start_dt.strftime("%Y-%m-%d %H:%M:%S")
+
+        if self._report.running_state == "finished":
+            end_dt = start_dt + datetime.timedelta(
+                seconds=self._report.total_duration
+            )
+            duration_seconds = self._report.total_duration
+        else:
+            end_dt = datetime.datetime.now()
+            duration_seconds = (end_dt - start_dt).total_seconds()
+
+        end_time = end_dt.strftime("%Y-%m-%d %H:%M:%S")
+        duration_display = _format_duration(duration_seconds)
+
+        raw_total = sum(
+            self._report.outcomes[o]["value"] for o in self._report.outcomes
+        )
+        rerun_count = self._report.outcomes.get("rerun", {}).get("value", 0)
+        total_count = raw_total - rerun_count
+
         rendered_report = self._template.render(
             title=self._report.title,
             date=generated.strftime("%d-%b-%Y"),
@@ -66,6 +88,10 @@ class BaseReport:
             test_data=test_data,
             table_head=self._report.table_header,
             additional_summary=self._report.additional_summary,
+            start_time=start_time,
+            end_time=end_time,
+            duration_display=duration_display,
+            total_count=total_count,
         )
 
         self._write_report(rendered_report)

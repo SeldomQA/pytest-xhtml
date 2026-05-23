@@ -18,14 +18,6 @@ const removeChildren = (node) => {
 }
 
 const renderStatic = () => {
-    const renderEnvironmentTable = () => {
-        const environment = manager.environment
-        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
-        const table = document.getElementById('environment')
-        removeChildren(table)
-        rows.forEach((row) => table.appendChild(row))
-    }
-    renderEnvironmentTable()
 }
 
 const addItemToggleListener = (elem) => {
@@ -102,13 +94,6 @@ const bindEvents = () => {
         manager.setRender(updated)
         redraw()
     }
-
-    const header = document.getElementById('environment-header')
-    header.addEventListener('click', () => {
-        const table = document.getElementById('environment')
-        table.classList.toggle('hidden')
-        header.classList.toggle('collapsed')
-    })
 
     findAll('input[name="filter_checkbox"]').forEach((elem) => {
         elem.addEventListener('click', filterColumn)

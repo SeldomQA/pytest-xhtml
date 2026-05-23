@@ -342,14 +342,7 @@ span.xpassed, .xpassed .col-result {
   color: var(--secondary-color);
 }
 
-.filter {
-  /* margin-right: 15px; */
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  margin: 8px 10px;
-}
-
+/* filter checkbox - now inside switch component */
 .controls {
   display: flex;
   justify-content: space-between;
@@ -360,28 +353,41 @@ span.xpassed, .xpassed .col-result {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 5px;
-  /* font-size: large; */
+  gap: 12px;
 }
 
 #hide_all_details.show-summary {
-  background-color: var(--primary-color);
-  color: var(--light-color);
-  border: 1px solid #000;
-  padding: 8px 15px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: var(--border-radius);
+  background-color: transparent;
+  color: var(--x-primary);
+  border: 1.5px solid var(--x-primary);
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#hide_all_details.show-summary:hover {
+  background-color: var(--x-primary);
+  color: #fff;
 }
 
 #show_all_details.show-details {
-  background-color: var(--light-color);
-  color: var(--primary-color);
-  border: 1px solid #000;
-  padding: 8px 15px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: var(--border-radius);
+  background-color: var(--x-primary);
+  color: #fff;
+  border: 1.5px solid var(--x-primary);
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#show_all_details.show-details:hover {
+  background-color: var(--x-shade-primary);
+  border-color: var(--x-shade-primary);
 }
 
 /* 统计图表容器样式 */
@@ -700,4 +706,171 @@ span.xpassed, .xpassed .col-result {
 
 .d-block {
   display: block !important;
+}
+
+.summary-time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 14px;
+}
+
+.summary-time-emoji {
+  font-size: 16px;
+}
+
+.summary-time-label {
+  color: var(--x-skipped);
+  min-width: 80px;
+}
+
+.summary-time-value {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.summary-divider {
+  border: none;
+  border-top: 1px solid #e9ecef;
+  margin: 6px 0;
+}
+
+.summary-card-body .run-count {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.summary-card-body .summary-hint {
+  color: var(--x-skipped);
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.filter-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 0;
+}
+
+.filter-switch[data-disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.switch-track {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background-color: #c0ccda;
+  transition: background-color 0.3s ease;
+  vertical-align: middle;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.switch-track input[type=checkbox] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+  z-index: 2;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease;
+  z-index: 1;
+}
+
+.switch-track input:checked + .switch-thumb {
+  left: 20px;
+}
+
+.switch-label-text {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.filter-switch--passed .switch-track:has(input:checked) {
+  background-color: var(--x-success);
+}
+
+.filter-switch--passed .switch-label-text {
+  color: var(--x-success);
+}
+
+.filter-switch--failed .switch-track:has(input:checked) {
+  background-color: var(--x-danger);
+}
+
+.filter-switch--failed .switch-label-text {
+  color: var(--x-danger);
+}
+
+.filter-switch--error .switch-track:has(input:checked) {
+  background-color: var(--x-danger);
+}
+
+.filter-switch--error .switch-label-text {
+  color: var(--x-danger);
+}
+
+.filter-switch--skipped .switch-track:has(input:checked) {
+  background-color: var(--x-skipped);
+}
+
+.filter-switch--skipped .switch-label-text {
+  color: var(--x-skipped);
+}
+
+.filter-switch--xfailed .switch-track:has(input:checked) {
+  background-color: var(--x-warning);
+}
+
+.filter-switch--xfailed .switch-label-text {
+  color: var(--x-warning);
+}
+
+.filter-switch--xpassed .switch-track:has(input:checked) {
+  background-color: var(--x-info);
+}
+
+.filter-switch--xpassed .switch-label-text {
+  color: var(--x-info);
+}
+
+.filter-switch--rerun .switch-track:has(input:checked) {
+  background-color: var(--x-primary);
+}
+
+.filter-switch--rerun .switch-label-text {
+  color: var(--x-primary);
+}
+
+.filter-switch--retried .switch-track:has(input:checked) {
+  background-color: #f97316;
+}
+
+.filter-switch--retried .switch-label-text {
+  color: #f97316;
 }

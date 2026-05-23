@@ -66,7 +66,6 @@ module.exports = {
 
 },{"./storage.js":8}],2:[function(require,module,exports){
 const mediaViewer = require('./mediaviewer.js')
-const templateEnvRow = document.getElementById('template_environment_row')
 const templateResult = document.getElementById('template_results-table__tbody')
 
 function htmlToElements(html) {
@@ -90,19 +89,6 @@ const findAll = (selector, elem) => {
 }
 
 const dom = {
-    getStaticRow: (key, value) => {
-        const envRow = templateEnvRow.content.cloneNode(true)
-        const isObj = typeof value === 'object' && value !== null
-        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
-
-        const valuesElement = htmlToElements(
-            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
-        const td = findAll('td', envRow)
-        td[0].textContent = key
-        td[1].appendChild(valuesElement)
-
-        return envRow
-    },
     getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
         const resultBody = templateResult.content.cloneNode(true)
         resultBody.querySelector('tbody').classList.add(result.toLowerCase())
@@ -231,14 +217,6 @@ const removeChildren = (node) => {
 }
 
 const renderStatic = () => {
-    const renderEnvironmentTable = () => {
-        const environment = manager.environment
-        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
-        const table = document.getElementById('environment')
-        removeChildren(table)
-        rows.forEach((row) => table.appendChild(row))
-    }
-    renderEnvironmentTable()
 }
 
 const addItemToggleListener = (elem) => {
@@ -315,13 +293,6 @@ const bindEvents = () => {
         manager.setRender(updated)
         redraw()
     }
-
-    const header = document.getElementById('environment-header')
-    header.addEventListener('click', () => {
-        const table = document.getElementById('environment')
-        table.classList.toggle('hidden')
-        header.classList.toggle('collapsed')
-    })
 
     findAll('input[name="filter_checkbox"]').forEach((elem) => {
         elem.addEventListener('click', filterColumn)
