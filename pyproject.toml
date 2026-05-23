@@ -15,8 +15,7 @@ keywords = [
 ]
 license = "MPL-2.0"
 authors = [
-  { name = "Dave Hunt", email = "dhunt@mozilla.com" },
-  { name = "Jim Brannlund", email = "jimbrannlund@fastmail.com" },
+  { name = "Henry Hu", email = "defnngj@gmail.com" },
 ]
 requires-python = ">=3.10"
 classifiers = [
@@ -40,7 +39,7 @@ classifiers = [
   "Topic :: Software Development :: Testing",
   "Topic :: Utilities",
 ]
-version = "0.4.0"
+version = "0.5.0"
 
 dependencies = [
   "jinja2>=3",
@@ -52,14 +51,10 @@ optional-dependencies.docs = [
 ]
 optional-dependencies.test = [
   "assertpy>=1.1",
-  "beautifulsoup4>=4.11.1",
   "black>=22.1",
   "flake8>=4.0.1",
   "pre-commit>=2.17",
-  "pytest-mock>=3.7",
-  "pytest-rerunfailures>=11.1.2",
-  "pytest-xdist>=2.4",
-  "selenium>=4.3",
+  "pytest-playwright>=0.8.0",
   "tox>=3.24.5",
 ]
 urls.Homepage = "https://github.com/seldomqa/pytest-xhtml"
