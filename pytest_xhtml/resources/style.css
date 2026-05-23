@@ -383,6 +383,7 @@ span.xpassed, .xpassed .col-result {
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
+  margin-right: 10px;
 }
 
 #show_all_details.show-details:hover {
