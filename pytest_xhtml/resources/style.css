@@ -342,6 +342,11 @@ span.xpassed, .xpassed .col-result {
   color: var(--secondary-color);
 }
 
+.summary__spacer {
+  flex: 1;
+  padding: 0 10px;
+}
+
 /* filter checkbox - now inside switch component */
 .controls {
   display: flex;
@@ -383,7 +388,6 @@ span.xpassed, .xpassed .col-result {
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
-  margin-right: 10px;
 }
 
 #show_all_details.show-details:hover {
