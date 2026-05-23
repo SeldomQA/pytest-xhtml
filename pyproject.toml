@@ -78,7 +78,10 @@ features = [
 # source = "vcs"
 
 [tool.hatch.build.targets.wheel]
-exclude = []
+exclude = [
+  "images/*",
+  "*.png",
+]
 
 [tool.hatch.build.targets.sdist]
 exclude = [
