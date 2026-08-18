@@ -92,6 +92,7 @@ class BaseReport:
             end_time=end_time,
             duration_display=duration_display,
             total_count=total_count,
+            collected_items=self._report.collected_items,
         )
 
         self._write_report(rendered_report)
@@ -188,7 +189,11 @@ class BaseReport:
                 name_match = re.search(r"col-(\w+)", cell)
                 data_match = re.search(r"<td.*?>(.*?)</td>", cell)
                 if name_match and data_match:
-                    data[name_match.group(1)] = data_match.group(1)
+                    # strip inner tags (e.g. the result pill span) so
+                    # sorting keeps working on plain text values
+                    data[name_match.group(1)] = re.sub(
+                        r"<[^>]+>", "", data_match.group(1)
+                    )
 
     @pytest.hookimpl(trylast=True)
     def pytest_sessionstart(self, session):
@@ -309,7 +314,7 @@ class BaseReport:
             if extra["format_type"] in ["json", "text", "url"]
         ]
         cells = [
-            f'<td class="col-result">{outcome}</td>',
+            f'<td class="col-result"><span class="result-pill">{outcome}</span></td>',
             f'<td class="col-testId">{test_id}</td>',
             f'<td class="col-duration">{formatted_duration}</td>',
             f'<td class="col-links">{_process_links(links)}</td>',

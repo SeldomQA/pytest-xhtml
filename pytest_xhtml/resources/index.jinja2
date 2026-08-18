@@ -14,190 +14,211 @@
 </head>
 
 <body>
-  <nav class="navbar-top" id="topbar">
-    <div class="container-fluid">
-      <div>
-        <a href="https://github.com/SeldomQA/pytest-xhtml">
-          <img src="https://telegraph-image-cq2.pages.dev/XReport_logo.png" style="height: 2.25rem;">
-          <h1 style="float: right;" id="title">{{ title }}</h1>
-        </a>
+  {# ---------- shared helpers & derived values ---------- #}
+  {%- macro percent(value, total) -%}
+  {%- if total > 0 -%}{{ "%.1f"|format((value * 100.0) / total) }}%{%- else -%}0.0%{%- endif -%}
+  {%- endmacro -%}
+  {% set raw_total = outcomes.values()|map(attribute='value')|sum %}
+  {% set rerun_count = outcomes.get("rerun", {}).get("value", 0) %}
+  {% set total = raw_total - rerun_count %}
+  {% set attention_count = outcomes["failed"]["value"] + outcomes["error"]["value"] %}
+  {% set palette = {
+      "passed": "#22c55e", "failed": "#ef4444", "skipped": "#94a3b8",
+      "xfailed": "#f59e0b", "xpassed": "#8b5cf6", "error": "#dc2626",
+      "rerun": "#3b82f6", "retried": "#f97316"
+  } %}
+  {% set glyphs = {
+      "passed": "✓", "failed": "✕", "skipped": "⏭", "xfailed": "x",
+      "xpassed": "↑", "error": "!", "rerun": "↻", "retried": "↺"
+  } %}
+
+  <!-- ================= HERO HEADER ================= -->
+  <header class="report-hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow">TEST EXECUTION REPORT</div>
+        <h1 id="title">{{ title }}</h1>
+        <div class="hero-sub">Generated on {{ date }} at {{ time }} &nbsp;·&nbsp; {{ run_count }}</div>
+        <div class="summary__reload">
+          <div class="summary__reload__button {{ 'hidden' if running_state == 'finished' }}"
+            onclick="location.reload()">
+            <div>There are still tests running. Reload this page to get the latest results!</div>
+          </div>
+        </div>
+      </div>
+      {% set executed_pct = 100 if running_state == 'finished' else ((total_count * 100 / collected_items)|round|int if collected_items > 0 else 0) %}
+      {% set ring_c = 289.027 %}
+      <div class="hero-ring">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#dfe5f3" stroke-width="11" />
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#24408c" stroke-width="11"
+            stroke-linecap="round" stroke-dasharray="{{ (executed_pct / 100 * ring_c)|round(2) }} {{ ring_c }}"
+            transform="rotate(-90 60 60)" />
+        </svg>
+        <div class="hero-ring-center">
+          <span class="ring-pct">{{ executed_pct }}%</span>
+          <span class="ring-label">EXECUTED</span>
+        </div>
       </div>
     </div>
-  </nav>
-  <div class="body">
-    <div class="row">
-      <div class="col-12 col-lg-4">
-        <div class="card">
-          <div class="card-header">
-            <h2>Summary</h2>
+  </header>
+
+  <main class="body">
+    <!-- ================= ATTENTION BANNER ================= -->
+    {%- if attention_count > 0 %}
+    <div class="attention-banner">
+      <span class="attention-dot"></span>
+      <span class="attention-title">Attention Required:</span>
+      <span class="attention-text">{{ attention_count }} failed or error case(s) need follow-up.</span>
+    </div>
+    {%- endif %}
+
+    <div class="additional-summary prefix">
+      {%- for p in additional_summary['prefix'] %}
+      {{ p|safe }}
+      {%- endfor %}
+    </div>
+
+    <!-- ================= PLAN OVERVIEW ================= -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Plan Overview</h2>
+        <span class="card-hint">Execution context</span>
+      </div>
+      <div class="card-body">
+        <div class="overview-grid">
+          <div class="overview-item">
+            <div class="overview-label">Total Cases</div>
+            <div class="overview-value">{{ total_count }}</div>
           </div>
-          <div class="card-body summary-card-body">
-            <div class="summary-time-row">
-              <span class="summary-time-emoji">🕐</span>
-              <span class="summary-time-label">Start time</span>
-              <span class="summary-time-value">{{ start_time }}</span>
+          <div class="overview-item">
+            <div class="overview-label">Start Time</div>
+            <div class="overview-value overview-value--sm">{{ start_time }}</div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-label">End Time</div>
+            <div class="overview-value overview-value--sm">{{ end_time }}</div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-label">Duration</div>
+            <div class="overview-value overview-value--sm">{{ duration_display }}</div>
+          </div>
+        </div>
+        <div id="environment-card" class="environment-block hidden">
+          <div class="env-title">Environment</div>
+          <div id="environment-grid" class="env-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= EXECUTION SUMMARY ================= -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Execution Summary</h2>
+        <span class="card-hint">Aggregated result distribution</span>
+      </div>
+      <div class="card-body">
+        <div class="metric-grid">
+          {%- for key, o in outcomes.items() %}
+          {%- if key != "retried" or o.value > 0 %}
+          <div class="metric-card metric-card--{{ key }}">
+            <div class="metric-icon"
+              style="background: {{ palette.get(key, '#94a3b8') }}1a; color: {{ palette.get(key, '#94a3b8') }};">
+              {{ glyphs.get(key, '·') }}
             </div>
-            <hr class="summary-divider">
-            <div class="summary-time-row">
-              <span class="summary-time-emoji">🕐</span>
-              <span class="summary-time-label">End time</span>
-              <span class="summary-time-value">{{ end_time }}</span>
-            </div>
-            <hr class="summary-divider">
-            <div class="summary-time-row">
-              <span class="summary-time-emoji">⏳</span>
-              <span class="summary-time-label">Duration</span>
-              <span class="summary-time-value">{{ duration_display }}</span>
-            </div>
-            <hr class="summary-divider">
-            <div class="summary-time-row">
-              <span class="summary-time-emoji">🧪</span>
-              <span class="summary-time-label">Test total</span>
-              <span class="summary-time-value">{{ total_count }}</span>
-            </div>
-            <hr class="summary-divider">
-            <div class="additional-summary prefix">
-              {%- for p in additional_summary['prefix'] %}
-              {{ p|safe }}
+            <div class="metric-value">{{ o.value }}</div>
+            <div class="metric-label">{{ o.label|upper }}</div>
+            <div class="metric-hint">{{ percent(o.value, total) }} of total</div>
+          </div>
+          {%- endif %}
+          {%- endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CHARTS ================= -->
+    <div class="charts-row">
+      <section class="card chart-card">
+        <div class="card-header">
+          <h2>Test Outcomes</h2>
+          <span class="card-hint">Result distribution by status</span>
+        </div>
+        <div class="card-body chart-body">
+          <div class="donut">
+            <svg viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="54" fill="none" stroke="#e9edf6" stroke-width="20" />
+              {% set donut_c = 339.292 %}
+              {% set ns = namespace(cum=0) %}
+              {%- for key, o in outcomes.items() %}
+              {%- if o.value > 0 and raw_total > 0 %}
+              <circle cx="80" cy="80" r="54" fill="none" stroke="{{ palette.get(key, '#94a3b8') }}"
+                stroke-width="20"
+                stroke-dasharray="{{ (o.value * donut_c / raw_total)|round(2) }} {{ donut_c }}"
+                stroke-dashoffset="{{ (-ns.cum * donut_c / raw_total)|round(2) }}"
+                transform="rotate(-90 80 80)" />
+              {% set ns.cum = ns.cum + o.value %}
+              {%- endif %}
               {%- endfor %}
+            </svg>
+            <div class="donut-center">
+              <span class="donut-total">{{ raw_total }}</span>
+              <span class="donut-caption">Total Results</span>
             </div>
-            <div class="summary__reload">
-              <div class="summary__reload__button {{ 'hidden' if running_state == 'finished' }}"
-                onclick="location.reload()">
-                <div>There are still tests running. <br />Reload this page to get the latest results!</div>
-              </div>
+          </div>
+          <ul class="legend">
+            {%- for key, o in outcomes.items() %}
+            {%- if o.value > 0 %}
+            <li>
+              <span class="legend-dot" style="background: {{ palette.get(key, '#94a3b8') }};"></span>
+              <span class="legend-name">{{ o.label }}</span>
+              <span class="legend-count">{{ o.value }}</span>
+            </li>
+            {%- endif %}
+            {%- endfor %}
+          </ul>
+        </div>
+      </section>
+      <section class="card chart-card">
+        <div class="card-header">
+          <h2>Result Distribution</h2>
+          <span class="card-hint">Stacked share of all results</span>
+        </div>
+        <div class="card-body chart-body chart-body--column">
+          <div class="stacked-bar">
+            {%- if raw_total > 0 %}
+            {%- for key, o in outcomes.items() %}
+            {%- if o.value > 0 %}
+            <div class="stacked-seg" title="{{ o.label }}: {{ o.value }}"
+              style="width: {{ (o.value * 100.0 / raw_total)|round(2) }}%; background: {{ palette.get(key, '#94a3b8') }};">
+            </div>
+            {%- endif %}
+            {%- endfor %}
+            {%- endif %}
+          </div>
+          <div class="rate-grid">
+            <div class="rate-block">
+              <span class="rate-big rate-big--passed">{{ percent(outcomes["passed"]["value"], total) }}</span>
+              <span class="rate-desc">Pass rate</span>
+            </div>
+            <div class="rate-block">
+              <span class="rate-big rate-big--failed">{{ percent(outcomes["failed"]["value"], total) }}</span>
+              <span class="rate-desc">Failure rate</span>
+            </div>
+            <div class="rate-block">
+              <span class="rate-big rate-big--skipped">{{ percent(outcomes["skipped"]["value"], total) }}</span>
+              <span class="rate-desc">Skipped rate</span>
             </div>
           </div>
         </div>
-      </div>
-      <!--  Calculate the percentage -->
-      {%- macro percent(value, total) -%}
-      {%- if total > 0 -%}{{ "%.2f"|format((value * 100.0) / total) }}%{%- else -%}0.00%{%- endif -%}
-      {%- endmacro -%}
-      {% set raw_total = outcomes.values()|map(attribute='value')|sum %}
-      {% set rerun_count = outcomes.get("rerun", {}).get("value", 0) %}
-      {% set total = raw_total - rerun_count %}
-      <!--  passed and failed rate cards -->
-      <div class="col-12 col-lg-5 col-xl-2">
-        <div class="card card-above flex-fill">
-          <div class="card-body">
-            <div class="row">
-              <div class="col"><span class="passed d-block">Passed</span>
-                <span class="h3">
-                  {{ outcomes["passed"]["value"] }}
-                </span>
-              </div>
-              <div class="col-auto">
-                <div class="icon-shape bg-passed text-white text-lg rounded-circle">P</div>
-              </div>
-            </div>
-            <div>
-              <span class="badge bg-soft-secondary text-success">{{ percent(outcomes["passed"]["value"], total)
-                }}</span>
-              <span>Pass rate</span>
-            </div>
-          </div>
-        </div>
-        <div class="card card-below flex-fill">
-          <div class="card-body">
-            <div class="row">
-              <div class="col"><span class="failed d-block">Failure</span>
-                <span class="h3">
-                  {{ outcomes["failed"]["value"] }}
-                </span>
-              </div>
-              <div class="col-auto">
-                <div class="icon icon-shape bg-failure text-white text-lg rounded-circle">F</div>
-              </div>
-            </div>
-            <div>
-              <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["failed"]["value"], total)
-                }}</span>
-              <span>Failure rate</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--  skipped and xfailed rate cards -->
-      <div class="col-12 col-lg-5 col-xl-2">
-        <div class="card card-above flex-fill">
-          <div class="card-body">
-            <div class="row">
-              <div class="col"><span class="skipped d-block">Skipped</span>
-                <span class="h3">
-                  {{ outcomes["skipped"]["value"] }}
-                </span>
-              </div>
-              <div class="col-auto">
-                <div class="icon-shape bg-skipped text-white text-lg rounded-circle">S</div>
-              </div>
-            </div>
-            <div>
-              <span class="badge bg-soft-secondary text-dark">{{ percent(outcomes["skipped"]["value"], total) }}</span>
-              <span>Skipped rate</span>
-            </div>
-          </div>
-        </div>
-        <div class="card card-below flex-fill">
-          <div class="card-body">
-            <div class="row">
-              <div class="col"><span class="xfailed d-block">Expected failures</span>
-                <span class="h3">
-                  {{ outcomes["xfailed"]["value"] }}
-                </span>
-              </div>
-              <div class="col-auto">
-                <div class="icon-shape bg-xfailed text-white text-lg rounded-circle">Xf</div>
-              </div>
-            </div>
-            <div>
-              <span class="badge bg-soft-secondary text-warning">{{ percent(outcomes["xfailed"]["value"], total)
-                }}</span>
-              <span>Expected fail rate</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--  xpassed and xfailed rate cards -->
-      <div class="col-12 col-lg-5 col-xl-2">
-        <div class="card card-above flex-fill">
-          <div class="card-body">
-            <div class="row">
-              <div class="col"><span class="xpassed d-block">Unexpected passes</span>
-                <span class="h3">
-                  {{ outcomes["xpassed"]["value"] }}
-                </span>
-              </div>
-              <div class="col-auto">
-                <div class="icon-shape bg-xpassed text-white text-lg rounded-circle">Xp</div>
-              </div>
-            </div>
-            <div>
-              <span class="badge bg-soft-secondary text-info">{{ percent(outcomes["xpassed"]["value"], total) }}</span>
-              <span>Unexpected pass rate</span>
-            </div>
-          </div>
-        </div>
-        <div class="card card-below flex-fill">
-          <div class="card-body">
-            <div class="row">
-              <div class="col"><span class="error d-block">Errors</span>
-                <span class="h3">
-                  {{ outcomes["error"]["value"] }}
-                </span>
-              </div>
-              <div class="col-auto">
-                <div class="icon-shape bg-error text-white text-lg rounded-circle">E</div>
-              </div>
-            </div>
-            <div>
-              <span class="badge bg-soft-secondary text-danger">{{ percent(outcomes["error"]["value"], total) }}</span>
-              <span>Error rate</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
+
+    <div class="additional-summary">
+      {%- for s in additional_summary['summary'] %}
+      {{ s|safe }}
+      {%- endfor %}
+    </div>
+
     <!-- TEMPLATES -->
     <template id="template_results-table__body--empty">
       <tbody class="results-table-row">
@@ -237,17 +258,12 @@
     </template>
     <!-- END TEMPLATES -->
 
-    <div class="additional-summary">
-      {%- for s in additional_summary['summary'] %}
-      {{ s|safe }}
-      {%- endfor %}
-    </div>
-    <div class="additional-summary postfix">
-      {%- for p in additional_summary['postfix'] %}
-      {{ p|safe }}
-      {%- endfor %}
-    </div>
-    <div class="card flex-fill">
+    <!-- ================= RESULTS TABLE ================= -->
+    <section class="card flex-fill">
+      <div class="card-header table-card-head">
+        <h2>Test Results</h2>
+        <span class="card-hint">Click a row to toggle details</span>
+      </div>
       <div class="summary__spacer">
         <div class="controls">
           <div class="filters">
@@ -277,24 +293,99 @@
           </tr>
         </thead>
       </table>
+    </section>
+
+    <div class="additional-summary postfix">
+      {%- for p in additional_summary['postfix'] %}
+      {{ p|safe }}
+      {%- endfor %}
     </div>
-  </div>
+  </main>
+
   <footer>
     <div id="data-container" data-jsonblob="{{ test_data }}"></div>
     <script>
       {% include "app.js" %}
     </script>
+    <script>
+      // ---- SaaS dashboard enhancements: environment grid ----
+      (function () {
+        var data = JSON.parse(document.getElementById('data-container').dataset.jsonblob);
+
+        // Environment grid (Plan Overview)
+        function formatEnvValue(value) {
+          if (value === null || value === undefined) {
+            return '';
+          }
+          if (Array.isArray(value)) {
+            return value.map(formatEnvValue).join(', ');
+          }
+          if (typeof value === 'object') {
+            // {name, version} item from older pytest-metadata versions
+            if ('name' in value) {
+              return [value.name, value.version].filter(Boolean).join(' ');
+            }
+            // {name: version, ...} mapping, e.g. Packages / Plugins
+            return Object.keys(value).map(function (key) {
+              return key + ' ' + formatEnvValue(value[key]);
+            }).join(', ');
+          }
+          return String(value);
+        }
+
+        // {name: version, ...} mappings (Packages / Plugins) render as chips
+        function isEnvMapping(value) {
+          return value !== null && typeof value === 'object' &&
+            !Array.isArray(value) && !('name' in value) &&
+            Object.keys(value).length > 0;
+        }
+
+        var envGrid = document.getElementById('environment-grid');
+        var envCard = document.getElementById('environment-card');
+        var env = data.environment || {};
+        var envEntries = Object.keys(env);
+        if (envGrid && envCard && envEntries.length) {
+          envEntries.forEach(function (key) {
+            var value = env[key];
+            var item = document.createElement('div');
+            item.className = 'env-item';
+            var k = document.createElement('div');
+            k.className = 'env-key';
+            k.textContent = key;
+            item.appendChild(k);
+            if (isEnvMapping(value)) {
+              item.classList.add('env-item--chips');
+              var chips = document.createElement('div');
+              chips.className = 'env-chips';
+              Object.keys(value).forEach(function (name) {
+                var chip = document.createElement('span');
+                chip.className = 'env-chip';
+                chip.textContent = name;
+                var ver = document.createElement('span');
+                ver.className = 'env-chip__ver';
+                ver.textContent = formatEnvValue(value[name]);
+                chip.appendChild(ver);
+                chips.appendChild(chip);
+              });
+              item.appendChild(chips);
+            } else {
+              var v = document.createElement('div');
+              v.className = 'env-val';
+              v.textContent = formatEnvValue(value);
+              item.appendChild(v);
+            }
+            envGrid.appendChild(item);
+          });
+          envCard.classList.remove('hidden');
+        }
+      })();
+    </script>
   </footer>
-  </div>
   <footer class="footer-bottom">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-6">
-          <p>Report generated on {{ date }} at {{ time }} by <a
-              href="https://github.com/SeldomQA/pytest-xhtml">pytest-xhtml</a>
-            v{{ version }}</p>
-        </div>
-      </div>
+      <p>Report generated on {{ date }} at {{ time }} by <a
+          href="https://github.com/SeldomQA/pytest-xhtml">pytest-xhtml</a>
+        v{{ version }}</p>
     </div>
   </footer>
 </body>
