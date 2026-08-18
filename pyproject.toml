@@ -39,7 +39,7 @@ classifiers = [
   "Topic :: Software Development :: Testing",
   "Topic :: Utilities",
 ]
-version = "0.5.0"
+dynamic = ["version"]
 
 dependencies = [
   "jinja2>=3",
@@ -68,9 +68,6 @@ features = [
   "test",
 ]
 
-# [tool.hatch.version]
-# source = "vcs"
-
 [tool.hatch.build.targets.wheel]
 packages = ["pytest_xhtml"]
 
@@ -79,8 +76,8 @@ exclude = [
   "/.github",
 ]
 
-# [tool.hatch.build.hooks.vcs]
-# version-file = "pytest_xhtml/__version.py"
+[tool.hatch.build.hooks.vcs]
+version-file = "pytest_xhtml/__version.py"
 
 [tool.mypy]
 check_untyped_defs = false         # TODO
