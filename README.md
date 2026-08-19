@@ -22,8 +22,6 @@ cd testing_unit
 pytest test_sample.py --html=report.html
 ```
 
-![unit test](./images/unit_report_0.5.0.png)
-
 * e2e test
 
 ```bash
@@ -35,8 +33,6 @@ cd testing_e2e
 pytest test_playwright.py --html=report.html
 ```
 
-![e2e test](./images/e2e_report_0.5.0.png)
-
 * http test
 
 ```bash
@@ -47,7 +43,9 @@ cd testing_req
 pytest test_req.py --html=report.html
 ```
 
-![http test](./images/http_report_0.5.0.png)
+* HTML Report
+
+![html report](./images/report_0.6.0.jpg)
 
 
 ## VS pytest-html
