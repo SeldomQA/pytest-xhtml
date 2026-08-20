@@ -827,6 +827,8 @@ span.rerun { color: var(--c-rerun); font-weight: 600; }
   font-family: "JetBrains Mono", "Courier New", Courier, monospace;
   font-size: 12.5px;
   white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
   color: var(--ink-700);
   background-color: transparent;
 }
