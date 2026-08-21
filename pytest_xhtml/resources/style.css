@@ -991,25 +991,8 @@ span.rerun { color: var(--c-rerun); font-weight: 600; }
 .filter-switch--retried .switch-track:has(input:checked) { background-color: var(--c-retried); }
 .filter-switch--retried .switch-label-text { color: var(--c-retried); }
 
-/* action buttons */
-#hide_all_details.show-summary {
-  background-color: transparent;
-  color: var(--brand-blue);
-  border: 1.5px solid var(--brand-blue);
-  padding: 7px 18px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-#hide_all_details.show-summary:hover {
-  background-color: var(--brand-blue);
-  color: #fff;
-}
-
-#show_all_details.show-details {
+/* action button */
+#toggle_all_details.toggle-details {
   background-color: var(--brand-blue);
   color: #fff;
   border: 1.5px solid var(--brand-blue);
@@ -1021,9 +1004,19 @@ span.rerun { color: var(--c-rerun); font-weight: 600; }
   transition: var(--transition);
 }
 
-#show_all_details.show-details:hover {
+#toggle_all_details.toggle-details:hover {
   background-color: var(--x-shade-primary);
   border-color: var(--x-shade-primary);
+}
+
+#toggle_all_details.toggle-details.expanded {
+  background-color: transparent;
+  color: var(--brand-blue);
+}
+
+#toggle_all_details.toggle-details.expanded:hover {
+  background-color: var(--brand-blue);
+  color: #fff;
 }
 
 /* ================= ADDITIONAL SUMMARY & MISC ================= */

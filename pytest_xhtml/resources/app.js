@@ -307,15 +307,22 @@ const bindEvents = () => {
         })
     })
 
-    document.getElementById('show_all_details').addEventListener('click', () => {
-        manager.allCollapsed = false
-        setCollapsedIds([])
-        redraw()
-    })
-    document.getElementById('hide_all_details').addEventListener('click', () => {
-        manager.allCollapsed = true
-        const allIds = manager.renderData.tests.map((test) => test.id)
-        setCollapsedIds(allIds)
+    const toggleBtn = document.getElementById('toggle_all_details')
+    let detailsExpanded = false
+    toggleBtn.addEventListener('click', () => {
+        detailsExpanded = !detailsExpanded
+        if (detailsExpanded) {
+            manager.allCollapsed = false
+            setCollapsedIds([])
+            toggleBtn.textContent = 'Show summary'
+            toggleBtn.classList.add('expanded')
+        } else {
+            manager.allCollapsed = true
+            const allIds = manager.renderData.tests.map((test) => test.id)
+            setCollapsedIds(allIds)
+            toggleBtn.textContent = 'Show details'
+            toggleBtn.classList.remove('expanded')
+        }
         redraw()
     })
 }
