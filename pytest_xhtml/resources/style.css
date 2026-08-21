@@ -19,7 +19,7 @@
 
   /* status palette (matches reference image) */
   --c-passed: #22c55e;
-  --c-failed: #ef4444;
+  --c-failed: #f14b66;
   --c-error: #dc2626;
   --c-skipped: #94a3b8;
   --c-xfailed: #f59e0b;
