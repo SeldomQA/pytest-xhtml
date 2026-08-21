@@ -4,7 +4,7 @@ import pytest
 def test_pass():
     assert 1 + 1 == 2
 
-def test_fail():
+def test_assert_fail():
     assert 1 + 1 == 3
 
 def test_skip():
@@ -19,10 +19,10 @@ def test_xpass():
     """这是一个 Unexpected passes 用例 - 预期失败但实际通过"""
     assert 1 + 1 == 2
 
-def test_error():
-    """这是一个 Error 用例 - 测试执行时发生异常"""
+def test_failed():
+    """这是一个 Failed 用例 - 测试执行时发生异常"""
     # 故意引发一个异常来模拟错误
-    raise ValueError("模拟测试执行错误")
+    raise ValueError("模拟测试执行失败")
 
 @pytest.fixture
 def error_fixture():
